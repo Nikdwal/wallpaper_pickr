@@ -6,6 +6,7 @@ from requests.exceptions import ConnectionError
 import requests as req
 import shutil
 from set_as_wallpaper import set_wallpaper
+from pathlib import Path
 
 curr_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(curr_directory)
@@ -49,7 +50,12 @@ try:
 
     # download the chosen image
     r = req.get(url, stream=True)
-    filename = os.path.join(curr_directory, "wallpaper")
+    filename = os.path.join(curr_directory, "wallpaperpickr" + str(int(time())))
+    
+    # Unlink previous wallpaper
+    for p in Path(".").glob("wallpaperpickr[0-9]*"):
+        p.unlink()
+
     with open(filename, "wb") as f:
         r.raw.decode_content = True
         shutil.copyfileobj(r.raw, f) 

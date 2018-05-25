@@ -1,4 +1,5 @@
 __pycache__
-wallpaper
+wallpaperpickr[0-9]*
 lastchange
 token
+flickrapi

@@ -8,5 +8,4 @@ def set_wallpaper_gnome(filename):
     subprocess.call(["gsettings", "set", "org.gnome.desktop.background", "picture-uri", filename])
 
 def set_wallpaper_mac(filename):
-    raise NotImplementedError()
-
+    subprocess.call(["osascript", "-e", "tell application \"Finder\" to set desktop picture to POSIX file \"" + filename + "\""])
