@@ -7,6 +7,7 @@ import requests as req
 import shutil
 from set_as_wallpaper import set_wallpaper
 from pathlib import Path
+from sys import stderr
 
 curr_directory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(curr_directory)
@@ -16,7 +17,7 @@ try:
     with open(os.path.join(curr_directory, "token")) as f:
         token = [line.replace("\n","") for line in f]
 except FileNotFoundError:
-    print("Please a enter a valid token in the file 'token'")
+    print("Please a enter a valid token in the file 'token'", file=stderr)
     exit(1)
 
 try:
@@ -69,5 +70,5 @@ try:
         f.write(str(time()))
 
 except ConnectionError:
-    print("No internet connection")
+    print("No internet connection", file=stderr)
     exit(1)

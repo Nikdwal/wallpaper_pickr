@@ -1,8 +1,35 @@
 import subprocess
+from sys import stderr
+from os import path
 
 def set_wallpaper(filename):
-    # change this bit if you use a different window manager (see below)
-    set_wallpaper_gnome(filename)
+    f = choose_wallpaper_setter()
+    f(filename)
+
+# returns the function that can edit the file name
+# This function corresponds to the window manager entered in winmgr.conf
+def choose_wallpaper_setter():
+    conf_file_rel = "winmgr.conf"
+    conf_file     = path.join(path.dirname(path.abspath(__file__)), conf_file_rel)
+    with open(conf_file, "r") as f:
+        winmgr = None
+        for line in f:
+            if line.strip() and line[0] != "#":
+                winmgr = line
+                break
+        if winmgr is None:
+            print("Please enter the name of your window manager in the file " + conf_file_rel + ".", file=stderr)
+            exit(1)
+
+    winmgr = winmgr.lower().replace("\n","")
+    if winmgr == "macos":
+        func = set_wallpaper_mac
+    elif winmgr == "gnome":
+        func = set_wallpaper_gnome
+    else:
+        print("Your window manager is not supported.", file=stderr)
+        exit(1)
+    return func
 
 def set_wallpaper_gnome(filename):
     subprocess.call(["gsettings", "set", "org.gnome.desktop.background", "picture-uri", filename])
