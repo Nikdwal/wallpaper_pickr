@@ -50,7 +50,8 @@ try:
 
     # download the chosen image
     r = req.get(url, stream=True)
-    filename = os.path.join(curr_directory, "wallpaperpickr" + str(int(time())))
+    filename_without_dir = "wallpaperpickr" + str(int(time()))
+    filename = os.path.join(curr_directory, filename_without_dir)
     
     with open(filename, "wb") as f:
         r.raw.decode_content = True
@@ -60,7 +61,7 @@ try:
 
     # Unlink previous wallpaper
     for p in Path(".").glob("wallpaperpickr[0-9]*"):
-        if str(p) != str(filename):
+        if str(p) != str(filename_without_dir):
             p.unlink()
 
     # update the last_change time
