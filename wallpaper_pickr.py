@@ -52,15 +52,16 @@ try:
     r = req.get(url, stream=True)
     filename = os.path.join(curr_directory, "wallpaperpickr" + str(int(time())))
     
-    # Unlink previous wallpaper
-    for p in Path(".").glob("wallpaperpickr[0-9]*"):
-        p.unlink()
-
     with open(filename, "wb") as f:
         r.raw.decode_content = True
         shutil.copyfileobj(r.raw, f) 
 
     set_wallpaper(str(filename))
+
+    # Unlink previous wallpaper
+    for p in Path(".").glob("wallpaperpickr[0-9]*"):
+        if str(p) != str(filename):
+            p.unlink()
 
     # update the last_change time
     with open("lastchange", "w") as f:
