@@ -26,6 +26,8 @@ def choose_wallpaper_setter():
         func = set_wallpaper_mac
     elif winmgr == "gnome":
         func = set_wallpaper_gnome
+    elif winmgr == "plasma":
+        func = set_wallpaper_plasma
     else:
         print("Your window manager is not supported.", file=stderr)
         exit(1)
@@ -36,3 +38,16 @@ def set_wallpaper_gnome(filename):
 
 def set_wallpaper_mac(filename):
     subprocess.call(["osascript", "-e", "tell application \"Finder\" to set desktop picture to POSIX file \"" + filename + "\""])
+
+def set_wallpaper_plasma(filename):
+    subprocess.call(["qdbus", "org.kde.plasmashell", "/PlasmaShell", "org.kde.PlasmaShell.evaluateScript", """
+    var allDesktops = desktops();
+    for (i=0;i<allDesktops.length;i++) {{
+        d = allDesktops[i];
+        d.wallpaperPlugin = "org.kde.image";
+        d.currentConfigGroup = Array("Wallpaper",
+                                     "org.kde.image",
+                                     "General");
+        d.writeConfig("Image", "file:///""" + filename + """\")
+    }}
+    """])
